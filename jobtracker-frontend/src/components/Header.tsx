@@ -3,13 +3,25 @@ import logo from "../assets/logo.svg"
 
 const Header = () => {
   return (
-    <header className='bg-white shadow-sm py-4 px-6 md:px-10 border border-b-[#DBE0E5] flex justify-between'>
-        <div className='flex items-center gap-8 '>
-            <div className='flex md:gap-4  items-center'>
-              <img src={logo} alt="" className='w-6 h-6'/>
-              <h3 className='text-2xl font-bold text-[#121417] '>JobTrackr</h3>
+
+    <header className='bg-white shadow-sm border border-b-[#DBE0E5] sticky z-50'>
+      <div className='px-4 sm:px-6 lg:px-8'>
+
+      <div className='flex justify-between items-center h-16'>
+
+      
+      
+        <div className='flex items-center gap-4 sm:gap-8 '>
+            <div className='flex gap-2 sm:gap-3 items-center'>
+              <div className='w-6 h-6 sm:w-8 sm:h-8 rounded-md flex items-center justify-center'>
+                <img src={logo} alt="" className='w-6 h-6'/>
+              </div>
+              <h3 className='text-xl sm:text-2xl font-bold text-[#121417] '>JobTrackr</h3>
             </div>
-            <nav className='hidden md:flex gap-6 text-gray-600'>
+
+
+
+            <nav className='hidden md:flex gap-6 text-gray-600 '>
               <a href="#" className="text-md">Dashboard</a>
               <a href="#" className="text-md">Applications</a>
               <a href="#" className="text-md">Resources</a>
@@ -44,6 +56,8 @@ const Header = () => {
             alt="User Avatar"
             className="w-9 h-9 rounded-full object-cover cursor-pointer"
               />
+          </div>
+          </div>
           </div>
 
         </div>

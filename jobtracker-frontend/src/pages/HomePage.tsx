@@ -4,9 +4,9 @@ import ApplicationsTable from '../components/ApplicationsTable'
 
 const HomePage = () => {
   return (
-    <div className=''>
+    <div className='min-h-screen'>
         <Header/>
-        <main className='md:py-5 px-40'>
+        <main className='py-4 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-40'>
           
         <ApplicationsTable/>
         </main>
