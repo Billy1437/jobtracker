@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import axios from 'axios';
+
 const Login = () => {
     const [loading,setLoading] = useState(false);
     const [formData, setFormData] = useState({
         email : "",
         password: ""
     })
+
+    const serverUrl = import.meta.env.VITE_SERVER_URL
 
     const [error,setError] = useState('');
 
@@ -26,8 +29,12 @@ const Login = () => {
         setLoading(true);
 
         try{
-            const response = await axios.post('http://localhost:5001/api/auth/login', formData)
+            const response = await axios.post(`${serverUrl}/api/auth/login`, formData)
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user',JSON.stringify(response.data.user))
+
+            console.log('login successful')
+            console.log('data',response.data.user)
 
             window.location.href = "/homepage";
 

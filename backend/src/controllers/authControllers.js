@@ -54,10 +54,17 @@ export const loginUser = async (req,res) => {
 
         const token = generateToken(user._id)
 
+        const userWithoutPassword = {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            createdAt: user.createdAt
+        };
+
         res.json({
             success:true,
             token : token,
-            user
+            user : userWithoutPassword
         })
 
     }catch(error){

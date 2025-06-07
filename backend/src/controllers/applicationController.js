@@ -5,7 +5,7 @@ import Application from "../models/Applications.js"
 export const getAllUserApplications = async (req,res) => {
     
     try{
-        const userId = req.user.id
+        const userId = req.user._id
         const applications = await Application.find({userId : userId}).sort({createdAt: -1});
 
         res.status(200).json({
@@ -25,12 +25,12 @@ export const createApplication = async (req,res) => {
         const {position,company,status,appliedDate,notes} = req.body
 
         const application = await Application.create({
-            userId : req.user.id,
+            userId : req.user._id,
             position : position,
             company : company,
             status : status,
             appliedDate : appliedDate,
-            notes : notes
+            note : notes
         })
 
         res.status(200).json({
@@ -49,7 +49,7 @@ export const createApplication = async (req,res) => {
 
 export const updateApplication = async (req,res) => {
     try{
-        const userId = req.user.id;
+        const userId = req.user._id;
         const application = await Application.findOneAndUpdate(
             {_id : req.params.id, userId : userId},
             req.body,
@@ -77,7 +77,7 @@ export const updateApplication = async (req,res) => {
 export const deleteApplication = async (req,res) => {
 
     try{
-        const userId = req.user.id
+        const userId = req.user._id
         const application = await Application.findOneAndDelete({
             _id : req.params.id, userId : userId
         }

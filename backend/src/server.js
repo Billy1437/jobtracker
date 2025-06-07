@@ -21,9 +21,12 @@ app.use(cors({
 // route auth
 app.use("/api/auth",authRouter)
 
+// protect
+
+
 // application route
 
-app.use("/api/application",applicationRouter )
+app.use("/api/application",applicationRouter)
 
 
 

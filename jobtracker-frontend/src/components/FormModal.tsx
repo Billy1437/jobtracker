@@ -2,21 +2,41 @@ import React, { useEffect, useState } from 'react'
 import { X } from 'lucide-react';
 
 
+
+export type Application = {
+    _id?: string,
+    company?: string,
+    position?: string,
+    appliedDate?: string,
+    status?: 'Applied' | 'Interviewing' | 'Rejected' | 'Offered',
+    notes?: string
+}
+
+
 interface FormModalProps{
   isOpen :boolean;
   onClose : () => void;
   title? :string;
-  onSubmit :(data : {company : string; position:string; appliedDate : string; status : string; note:string}) => void;
-  initialData? : {
-    company? : string;
-    position? :string;
-    status?: string;
-    appliedDate? :string
-    note? :string
-  } | null;
+  onSubmit :(data : Application) => void;
+  initialData? : Application | null;
   buttonText : string;
   
 }
+
+// Helper function to format ISO date to YYYY-MM-DD
+const formatISODateToYYYYMMDD = (isoString?: string | Date): string => {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    
+    if (isNaN(date.getTime())) return ''; // Return empty string for invalid dates
+
+    // Get date components
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+    const day = date.getDate().toString().padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+};
 
 
 
@@ -25,18 +45,18 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
 
   const [company,setCompany] = useState(initialData?.company || '');
   const [position, setPosition] = useState(initialData?.position || '');
-  const [appliedDate,setAppliedDate] = useState(initialData?.appliedDate || '');
+  const [appliedDate,setAppliedDate] = useState(formatISODateToYYYYMMDD(initialData?.appliedDate || ''));
   const [status,setStatus] = useState(initialData?.status || 'Applied');
-  const [note,setNote] = useState(initialData?.note || '')
+  const [note,setNote] = useState(initialData?.notes || '')
 
 
   useEffect(() => {
     if(initialData){
       setCompany(initialData.company ?? '');
       setPosition(initialData.position ?? '');
-      setAppliedDate(initialData.appliedDate ?? '');
-      setStatus(initialData.status ?? '');
-      setNote(initialData.note ?? '');
+      setAppliedDate(formatISODateToYYYYMMDD(initialData.appliedDate ?? ''));
+      setStatus(initialData.status ?? 'Applied');
+      setNote(initialData.notes ?? '');
     }else{
       setCompany('');
       setPosition('');
@@ -51,13 +71,14 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
 
   if(!isOpen) return null;
 
-  const handleSubmit = () => {
-    if(!company && !position){
+  const handleSubmit = (e: React.FormEvent) => {
+     e.preventDefault();
+    if(!company || !position || !appliedDate){
       alert("please fill in all the required fields")
       return;
 
     }
-    onSubmit({company,position,appliedDate,status,note})
+    onSubmit({company,position,appliedDate,status,notes:note})
   }
 
  
@@ -69,7 +90,7 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
 
           
             <div className=' flex justify-between items-center border-b p-6'>
-              <h2 className='text-xl fontbold text-gray-900'>
+              <h2 className='text-xl font-bold text-gray-900'>
                 {title}
               </h2>
               <button onClick={onClose} className='text-gray-800 transition-colors'>
@@ -115,7 +136,7 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
                   <label htmlFor="" className='block text-sm'>Status *</label>
                   <select name="" id="" value={status} 
                   className='w-full border border-gray-300 rounded-xl px-3 py-2'
-                  onChange={(e) => setStatus(e.target.value)}
+                  onChange={(e) => setStatus(e.target.value as 'Applied' | 'Interviewing' | 'Rejected' | 'Offered')}
                   >
                     <option value='Applied'>Applied</option>
                     <option value='Interviewing'>Interviewing</option>

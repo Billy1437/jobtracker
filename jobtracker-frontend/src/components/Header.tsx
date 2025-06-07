@@ -6,8 +6,21 @@ import { LogOut } from 'lucide-react'
 const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
+  const [currentUser, setCurrentUser] = useState<any>(() => {
+    const userData = localStorage.getItem('user')
+    return userData ? JSON.parse(userData) : null;
+  })
+
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setCurrentUser(null)
+    window.location.href = "/login"
+
   }
 
 
@@ -33,19 +46,22 @@ const Header = () => {
         {/* right side*/}
 
         
-          <div className='relative'>
-            <button className='flex items-center gap-2 p-1 rounded-lg over:bg-gray-100 transition-colors 
-            focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2' onClick={toggleUserMenu}
+           {/* Right side: User Profile and Menu */}
+          {currentUser ? ( 
+            <div className='relative'>
+              <button 
+                className='flex items-center gap-2 p-1 rounded-lg hover:bg-gray-100 transition-colors 
+                focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2' 
+                onClick={toggleUserMenu}
                 aria-expanded={isUserMenuOpen}
-                aria-haspopup="true">
-              <img
-            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" // Replace with a real user avatar image
-            alt="User Avatar"
-            className="w-9 h-9 rounded-full object-cover cursor-pointer"
-              />
-              <span className="hidden md:block text-sm font-medium text-gray-700 max-w-24 lg:max-w-32 truncate">
-                  John Doe
+                aria-haspopup="true"
+              >
+                
+                {/* User Name */}
+                <span className="text-sm font-medium text-gray-700 max-w-24 lg:max-w-32 truncate">
+                  {currentUser.name} 
                 </span>
+                {/* Dropdown Arrow */}
                 <svg
                   className={`hidden md:block w-4 h-4 text-gray-400 transition-transform ${
                     isUserMenuOpen ? "rotate-180" : ""
@@ -56,27 +72,35 @@ const Header = () => {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-            </button>
+              </button>
 
-            {isUserMenuOpen && (
-              <div className='absolute right-0 mt-2 w-48  bg-white rounded-lg shadow-lg
-              border border-gray-200 py-1 z-50 animate-in slide-in-from-top-2 duration-200'>
-                
-                <a
+              {isUserMenuOpen && (
+                <div
+                  className='absolute  right-0 mt-2 w-48 bg-white rounded-lg shadow-lg
+                  border border-gray-200 py-1 z-50 animate-in slide-in-from-top-2 duration-200'
+                >
+                  
+                  {/* Sign out link */}
+                  <a
                     href="#"
+                    onClick={handleLogout} 
                     className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
                     Sign out
                   </a>
-              </div>
-            )}
+                </div>
+              )}
+            </div>
+          ) : (
             
-          
-          </div>
-          </div>
+            <a href="/login" className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
+                Log In
+            </a>
+          )}
 
         </div>
+      </div>
 
         {/* overlay */}
         {isUserMenuOpen && (
