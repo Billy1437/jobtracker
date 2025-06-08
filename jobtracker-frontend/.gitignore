@@ -26,6 +26,6 @@ dist-ssr
 
 .env
 
-**/src/firebase/config.js
+**/src/firebase/config.ts
 
 
