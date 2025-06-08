@@ -8,6 +8,54 @@ const generateToken = (userId) => {
     // got token here
 };
 
+
+export const googleLogin = async (req,res) => {
+    const {googleId,name, email} = req.body;
+    try{
+        let user = await User.findOne({
+            $or: [
+                { googleId: googleId },
+                { email: email }
+            ]
+        })
+
+        if(!user){
+            user = new User({
+                googleId,
+                name,
+                email
+            })
+
+            await user.save()
+
+        }else{
+            if(!user.googleId){
+                user.googleId = googleId
+            }
+            await user.save()
+
+        }
+
+        const token = generateToken(user._id)
+
+        res.json({
+            token,
+            user : {
+                id : user._id,
+                name : user.name,
+                email : user.email
+
+            }
+        })
+
+
+    }catch(error){
+        console.error('Google login error:', error);
+        res.status(500).json({ message: 'Server error during Google login' });
+
+    }
+}
+
 export const createUser = async (req,res) => {
     try{
         const {name,email,password} = req.body;

@@ -4,13 +4,15 @@ import {auth} from "../firebase/config"
 import { useNavigate } from 'react-router-dom';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
-const Login = () => {
+const Register = () => {
     const [loading,setLoading] = useState(false);
     const [googleLoading,setgoogleLoading] = useState(false);
 
     const [formData, setFormData] = useState({
+        name: "",
         email : "",
-        password: ""
+        password: "",
+        confirmPassword: ""
     })
 
     const navigate = useNavigate()
@@ -69,15 +71,26 @@ const Login = () => {
         setLoading(true);
         setError("");
 
+        // Check if passwords match
+        if (formData.password !== formData.confirmPassword) {
+            setError("Passwords don't match");
+            setLoading(false);
+            return;
+        }
+
         try{
-            const response = await axios.post(`${serverUrl}/api/auth/login`, formData)
+            const response = await axios.post(`${serverUrl}/api/auth/register`, {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password
+            })
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user',JSON.stringify(response.data.user))
 
             navigate("/homepage")
 
         }catch(error:any){
-            setError(error.response?.data?.message || 'Login failed')
+            setError(error.response?.data?.message || 'Registration failed')
         }finally{
             setLoading(false)
             
@@ -90,7 +103,7 @@ const Login = () => {
         <div className='max-w-md w-full sm:space-y-8 space-y-6'>
             <div>
                 <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>
-                    Sign into your account
+                    Create your account
                 </h2>
             </div>
 
@@ -103,6 +116,15 @@ const Login = () => {
                 )}
 
                 <div className='rounded-md shadow-sm space-y-2'>
+                    <div>
+                        <input type="text" name='name' required
+                        className='relative block w-full px-3 py-2 border border-gray-300 placeholder:gray-500 text-gray-900
+                        rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                        placeholder='Enter your full name'
+                        value={formData.name}
+                        onChange={handleChange}
+                         />
+                    </div>
                     <div>
                         <input type="email" name='email' required
                         className='relative block w-full px-3 py-2 border border-gray-300 placeholder:gray-500 text-gray-900
@@ -121,6 +143,15 @@ const Login = () => {
                         onChange={handleChange}
                         />
                     </div>
+                    <div>
+                        <input type="password" name='confirmPassword' required
+                        className='relative block w-full px-3 py-2 border border-gray-300 placeholder:gray-500 text-gray-900
+                        rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                        placeholder='Confirm your password' 
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
                 <div>
@@ -128,7 +159,7 @@ const Login = () => {
                     className='"group relative w-full flex justify-center py-2 px-4 border border-transparent 
                     text-sm font-medium rounded-md text-white bg-indigo-600 
                     hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50'
-                    >{loading ? 'Signing in...' : 'Sign In'}</button>
+                    >{loading ? 'Creating account...' : 'Sign Up'}</button>
                 </div>
 
                 <div className='mt-6'>
@@ -147,15 +178,15 @@ const Login = () => {
                     border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50'
                     onClick={handleGoogleLogin}>
                         <img src='google.svg' className='w-5 h-5 mr-2' alt="" />
-                        Sign in with google
+                        Sign up with google
                     
                     </button>
                 </div>
                 </div>
 
                 <div className='text-center'>
-                    <span className='text-sm text-gray-600'>Dont have an account?{' '}
-                        <a href="/register" className='font-medium text-indigo-600 hover:text-indigo-500'>Sign Up
+                    <span className='text-sm text-gray-600'>Already have an account?{' '}
+                        <a href="/login" className='font-medium text-indigo-600 hover:text-indigo-500'>Sign In
                         </a>
                     </span>
                 </div>
@@ -170,4 +201,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Register

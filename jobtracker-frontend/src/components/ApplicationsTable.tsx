@@ -64,8 +64,7 @@ const ApplicationsTable = () => {
             return;
         }
 
-        console.log('Sending data:', formData);
-        console.log('Token:', token);
+      
 
 
         const headers:HeadersInit ={
