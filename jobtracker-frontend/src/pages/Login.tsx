@@ -6,7 +6,7 @@ import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 const Login = () => {
     const [loading,setLoading] = useState(false);
-    const [googleLoading,setgoogleLoading] = useState(false);
+    const [,setgoogleLoading] = useState(false);
 
     const [formData, setFormData] = useState({
         email : "",

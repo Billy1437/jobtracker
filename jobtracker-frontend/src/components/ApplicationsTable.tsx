@@ -24,7 +24,7 @@ const ApplicationsTable = () => {
     const [editingApp,setEditingApp] = useState<Application | null>(null)
     const [applications,setApplications] = useState<Application[]>([
         ])
-    const [currentUser,setCurrentUser] = useState<any>(null)
+    const [setCurrentUser] = useState<any>(null)
 
     useEffect(() => {
         const userData = localStorage.getItem('user');
