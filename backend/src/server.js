@@ -30,12 +30,6 @@ app.use("/api/application",applicationRouter)
 
 
 
-
-
-
-
-
-
 // database connection
 connectDb().then(() => {
      app.listen(PORT,(req,res) => {
