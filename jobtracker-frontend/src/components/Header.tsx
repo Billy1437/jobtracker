@@ -1,4 +1,4 @@
-import React from 'react'
+
 import logo from "../assets/logo.svg"
 import { useState } from 'react'
 import { LogOut } from 'lucide-react'

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 
 import FormModal from './FormModal'
 import { Edit, Plus, Search, Trash2 } from 'lucide-react'
@@ -162,14 +162,6 @@ const ApplicationsTable = () => {
             alert('Failed to delete application. Please try again.');
         }
     }
-
-    const handleLogout = () => {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        window.location.href = "/login"
-    }
-
-
 
 
     const openAddModal = () => {
