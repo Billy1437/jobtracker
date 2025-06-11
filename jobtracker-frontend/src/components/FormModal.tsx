@@ -65,7 +65,7 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
       setNote('')
     }
 
-  }, [initialData,isOpen])
+  }, [initialData])
 
   
 

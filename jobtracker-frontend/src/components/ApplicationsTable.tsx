@@ -15,9 +15,6 @@ export type Application = {
 }
 
 
-
-
-
 const ApplicationsTable = () => {
 
     const [isModalOpen,setisModalOpen] = useState(false);
@@ -45,12 +42,6 @@ const ApplicationsTable = () => {
          return date.toLocaleDateString(undefined, options); 
          
         };
-
-
-    
-
-
-
     const handleSubmitForm = async (formData : Application) => {
     try{
 
