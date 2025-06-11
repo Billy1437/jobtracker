@@ -2,8 +2,11 @@
 import logo from "../assets/logo.svg"
 import { useState } from 'react'
 import { LogOut } from 'lucide-react'
+import { useNavigate } from "react-router-dom"
 
 const Header = () => {
+  const navigate= useNavigate()
+
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const [currentUser, setCurrentUser] = useState<any>(() => {
@@ -19,7 +22,7 @@ const Header = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setCurrentUser(null)
-    window.location.href = "/"
+    navigate("/")
 
   }
 
