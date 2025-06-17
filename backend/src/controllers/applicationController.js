@@ -22,7 +22,7 @@ export const getAllUserApplications = async (req,res) => {
 
 export const createApplication = async (req,res) => {
     try{
-        const {position,company,status,appliedDate,notes} = req.body
+        const {position,company,status,appliedDate,note} = req.body
 
         const application = await Application.create({
             userId : req.user._id,
@@ -30,7 +30,7 @@ export const createApplication = async (req,res) => {
             company : company,
             status : status,
             appliedDate : appliedDate,
-            note : notes
+            note: note
         })
 
         res.status(200).json({

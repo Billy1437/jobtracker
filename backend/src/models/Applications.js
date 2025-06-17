@@ -25,7 +25,6 @@ const applicationSchema = mongoose.Schema({
     },
     note:{
         type:String,
-        required : true
     }
 }, {timestamps : true})
 

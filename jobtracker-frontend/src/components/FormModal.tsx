@@ -9,7 +9,7 @@ export type Application = {
     position?: string,
     appliedDate?: string,
     status?: 'Applied' | 'Interviewing' | 'Rejected' | 'Offered',
-    notes?: string
+    note?: string
 }
 
 
@@ -47,7 +47,7 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
   const [position, setPosition] = useState(initialData?.position || '');
   const [appliedDate,setAppliedDate] = useState(formatISODateToYYYYMMDD(initialData?.appliedDate || ''));
   const [status,setStatus] = useState(initialData?.status || 'Applied');
-  const [note,setNote] = useState(initialData?.notes || '')
+  const [note,setNote] = useState(initialData?.note || '')
 
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
       setPosition(initialData.position ?? '');
       setAppliedDate(formatISODateToYYYYMMDD(initialData.appliedDate ?? ''));
       setStatus(initialData.status ?? 'Applied');
-      setNote(initialData.notes ?? '');
+      setNote(initialData.note ?? '');
     }else{
       setCompany('');
       setPosition('');
@@ -78,7 +78,9 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
       return;
 
     }
-    onSubmit({company,position,appliedDate,status,notes:note})
+      const submissionData = {company, position, appliedDate, status,note};
+      console.log('Submitting data:', submissionData);
+      onSubmit({company,position,appliedDate,status,note})
   }
 
  
@@ -115,7 +117,7 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
                 <div>
                   <label htmlFor="" className='block text-sm mb-1'>Position *</label>
                   <input type="text" 
-                  className='w-full border border-gray-300 rounded-xl px-3 py-2'
+                  className='w-full border border-gray-300 rounded-lg px-3 py-2'
                   placeholder='Enter job position'
                   onChange={(e) => setPosition(e.target.value)}
                   required
@@ -125,7 +127,7 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
                 <div>
                   <label htmlFor="" className='block text-sm mb-1'>Application Date *</label>
                   <input type="date"
-                  className='w-full border border-gray-300 rounded-xl px-3 py-2'
+                  className='w-full border border-gray-300 rounded-lg px-3 py-2'
                   value={appliedDate}
                   onChange={(e) => setAppliedDate(e.target.value) }
                   required
@@ -133,9 +135,9 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
                 </div>
 
                 <div>
-                  <label htmlFor="" className='block text-sm'>Status *</label>
+                  <label htmlFor="" className='block text-sm mb-1'>Status *</label>
                   <select name="" id="" value={status} 
-                  className='w-full border border-gray-300 rounded-xl px-3 py-2'
+                  className='w-full border border-gray-300 rounded-lg px-3 py-2'
                   onChange={(e) => setStatus(e.target.value as 'Applied' | 'Interviewing' | 'Rejected' | 'Offered')}
                   >
                     <option value='Applied'>Applied</option>
@@ -151,7 +153,7 @@ const FormModal:React.FC<FormModalProps> = ({isOpen,onClose,title,onSubmit,initi
                   rows={3}
                   value={note}
                   onChange={(e)=> setNote(e.target.value)}
-                  className='w-full border border-gray-300 rounded-xl px-3 py-2'
+                  className='w-full border border-gray-300 rounded-lg px-3 py-2'
                   placeholder="Add any notes about this application..."></textarea>
                 </div>
               </div> 

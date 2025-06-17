@@ -11,7 +11,7 @@ export type Application = {
     position?: string,
     appliedDate?: string,
     status?: 'Applied' | 'Interviewing' | 'Rejected' | 'Offered',
-    notes?: string
+    note?: string | undefined
 }
 
 
@@ -22,6 +22,12 @@ const ApplicationsTable = () => {
     const [applications,setApplications] = useState<Application[]>([
         ])
     const [,setCurrentUser] = useState<any>(null)
+
+    // for the filter and search
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
+    const [dateFilter, setDateFilter] = useState('');
+    
 
     useEffect(() => {
         const userData = localStorage.getItem('user');
@@ -42,6 +48,8 @@ const ApplicationsTable = () => {
          return date.toLocaleDateString(undefined, options); 
          
         };
+
+
     const handleSubmitForm = async (formData : Application) => {
     try{
 
@@ -54,9 +62,6 @@ const ApplicationsTable = () => {
             window.location.href = "/login"
             return;
         }
-
-      
-
 
         const headers:HeadersInit ={
             'Content-Type': 'application/json',
@@ -87,7 +92,7 @@ const ApplicationsTable = () => {
 
             // update field
 
-            setApplications((prev) => prev.map(app => app._id == updatedApp.id ? updatedApp : app ));
+            setApplications((prev) => prev.map(app => app._id === updatedApp._id ? updatedApp : app ));
 
         }else{
             // create new
@@ -106,10 +111,6 @@ const ApplicationsTable = () => {
 
             setApplications(prev => [...prev,newApp])
         }
-
-
-
-        
 
         // close after success
         onClose();
@@ -186,6 +187,39 @@ const ApplicationsTable = () => {
     }
   }
 
+//   filter and search functions
+// Filter function
+    const getFilteredApplications = () => {
+        return applications.filter(app => {
+        // Search filter
+        const matchesSearch = searchTerm === '' || 
+        app.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        app.position?.toLowerCase().includes(searchTerm.toLowerCase());
+
+        // Status filter
+        const matchesStatus = statusFilter === '' || app.status === statusFilter;
+
+        // Date filter
+        const matchesDate = dateFilter === '' || isWithinDateRange(app.appliedDate, parseInt(dateFilter));
+
+        return matchesSearch && matchesStatus && matchesDate;
+    });
+    };
+
+    // Helper function to check if date is within range
+    const isWithinDateRange = (dateString?: string, days?: number): boolean => {
+    if (!dateString || !days) return true;
+    
+    const applicationDate = new Date(dateString);
+    const today = new Date();
+    const daysAgo = new Date(today.getTime() - (days * 24 * 60 * 60 * 1000));
+    
+    return applicationDate >= daysAgo;
+    };
+
+    // Get filtered applications
+    const filteredApplications = getFilteredApplications();
+
   const fetchApplications = async() => {
         try{
             const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -251,8 +285,11 @@ const ApplicationsTable = () => {
         <div className="relative ">
           <input
             type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by company or position"
-            className="pl-10 pr-4 py-2 rounded-lg border bg-[#F0f2f5] w-full focus:outline-none focus:ring-1 focus:ring-gray-800 focus:border-transparent transition duration-200"
+            className="pl-10 pr-4 py-2 rounded-lg border bg-[#F0f2f5] w-full focus:outline-none focus:ring-1 
+            focus:ring-gray-800 focus:border-transparent transition duration-200"
           />
           <Search className='w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2'/>
         </div>
@@ -261,28 +298,27 @@ const ApplicationsTable = () => {
         {/* options */}
         <div className=''>
         <div className='flex flex-wrap space-x-1 sm:space-x-3'>
-            <select name="" id="" className='py-2 bg-[#F0f2f5] rounded-lg border-0 focus:ring-2 
-            focus:ring-gray-800 transition-all'>
+            <select name="" id="" className='py-2 px-2 bg-[#F0f2f5] rounded-lg border-0 focus:ring-2 
+            focus:ring-gray-800 transition-all' 
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}>
                 <option value="">Status : All</option>
-                <option value="">Applied</option>
-                <option value="">Interviewing</option>
-                <option value="">Rejected</option>
+                <option value="Applied">Applied</option>
+                <option value="Interviewing">Interviewing</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Offered">Offered</option>
             </select>
 
-            <select name="" id="" className=' py-2 bg-[#F0f2f5] rounded-lg border-0 focus:ring-2 
-            focus:ring-gray-800 transition-all'>
+            <select name="" id="" className='px-2 py-2 bg-[#F0f2f5] rounded-lg border-0 focus:ring-2 
+            focus:ring-gray-800 transition-all'
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}>
                 <option value="">Date : All</option>
-                <option value="">Last 7 days</option>
-                <option value="">Last 30 days</option>
-                
+                <option value="7">Last 7 days</option>
+                <option value="30">Last 30 days</option>
             </select>
 
-            <select name="" id="" className='py-2 bg-[#F0f2f5] rounded-lg border-0 focus:ring-2 
-            focus:ring-gray-800 transition-all'>
-                <option value="">Location : All</option>
-                <option value="">Remote</option>
-                <option value="">On-site</option>
-            </select>
+            
         </div>
         </div>
 
@@ -304,7 +340,7 @@ const ApplicationsTable = () => {
                     </tr>
                 </thead>
                 <tbody className='divide-y divide-gray-200'>
-                    {applications.map((app,index) => 
+                    {filteredApplications.map((app,index) => 
                     <tr key={index} className='text-left hover:bg-gray-50'>
                         <td className='px-6 py-4 '>
                             <p>{app.company}</p>
@@ -321,8 +357,12 @@ const ApplicationsTable = () => {
                                 {app.status}
                             </span>
                         </td>
-                        <td className='px-6 py-4 '>
-                            <p>{app.notes}</p>
+                        <td className='px-6 py-4'>
+                            
+                            <p className="max-w-xs truncate" title={app.note || ''}>
+                            {app.note || '-'}
+                            </p>
+                            
                         </td>
                         <td className='px-6 py-4'>
                             <div className='flex gap-2'>
@@ -348,7 +388,7 @@ const ApplicationsTable = () => {
 
         {/* mobile cards */}
         <div className='lg:hidden space-y-4'>
-            {applications.map((app,index) => (
+            {filteredApplications.map((app,index) => (
                 <div key={index} className='bg-white rounded-lg shadow-sm border p-4 space-y-3'>
                     <div className='flex justify-between items-start'>
                         <div className='flex-1'>
@@ -365,10 +405,10 @@ const ApplicationsTable = () => {
                             <span className='text-gray-500'>Applied:</span>
                             <span className='text-gray-900'>{formatDisplayDate(app.appliedDate)}</span>
                         </div>
-                        {app.notes && (
-                            <div>
+                        {app.note && (
+                            <div className='flex justify-between'>
                                 <span className='text-gray-500'>Notes:</span>
-                                <p className='text-gray-900 mt-1'>{app.notes}</p>
+                                <span className='text-gray-900 mt-1'>{app.note}</span>
                             </div>
                         )}
                     </div>
@@ -423,22 +463,9 @@ const ApplicationsTable = () => {
         buttonText={editingApp ? 'Update': 'Add'}
         />
 
-
         </div>
 
         
-
-
-
-        
-
-
-
-
-
-
-
-
 
 
    
