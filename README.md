@@ -1,6 +1,5 @@
 # Job Trackr
 
-🔗 **Live Demo**: [https://jobtracker-frontend-iw4y.onrender.com](https://jobtracker-frontend-iw4y.onrender.com)
 
 ## Table of contents
 
